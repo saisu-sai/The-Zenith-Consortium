@@ -4,10 +4,11 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server:{
+  base: '/The-Zenith-Consortium',
+  // server:{
 
-    proxy : {
-      '/api' : 'http://localhost:3000',
-    },
-  }
+  //   proxy : {
+  //     '/api' : 'http://localhost:3000',
+  //   },
+  // }
 })
