@@ -2,17 +2,28 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
 
-function Vrfy({handleVerify, handleUser}){
+function Vrfy({handleVerify}){
   const [code,setCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false); 
   
-  async function verify(text){
-    
+  async function verify(text) {
+    if (!text) return;
+    setIsLoading(true); 
+
+    const API_URL = import.meta.env.PROD 
+      ? "https://the-zenith-consortium.onrender.com/api/verify" 
+      : "http://localhost:3000/api/verify";
+
     try {
-      const response = await axios.post("/api/verify", {
-        code:text,
-      })
+      const response = await axios.post(API_URL, {
+        code: text
+      });
+      
+      console.log("Server responded:", response.data);
       handleVerify(true, true);
-    } catch (error){
+      
+    } catch (error) {
+      console.log("Access Denied.");
       handleVerify(true, false);
     }
   }
@@ -33,7 +44,7 @@ function Vrfy({handleVerify, handleUser}){
   }
 
   return (
-    <>
+    <div style={{ transition: 'opacity 0.5s', opacity: isLoading ? 0.5 : 1 }}>
       <h1>The Zenith Consortium</h1>
       
       <div className = 'box'>
@@ -43,11 +54,24 @@ function Vrfy({handleVerify, handleUser}){
           onChange={handleChange}
           autoFocus
           value={code}
+          disabled={isLoading}
         />
-        <button className='btn' onClick={handleBtn}>ok</button>
+        <button 
+          className='btn' 
+          onClick={handleBtn}
+          disabled={isLoading} 
+        >
+          {isLoading ? "..." : "ok"}
+        </button>
 
       </div>
-    </>
+
+      {isLoading && (
+        <p style={{ color: '#555', marginTop: '20px', letterSpacing: '0.2em', fontSize: '0.8rem' }}>
+          ESTABLISHING SECURE CONNECTION...
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -83,7 +107,7 @@ function Home(){
       fontWeight: '300',
       letterSpacing: '0.6em',
       marginRight: '-0.6em', 
-      marginBottom: '1rem', // Reduced margin to group title and subtitle
+      marginBottom: '1rem',
       textTransform: 'uppercase',
     },
     subtitle: {
@@ -91,7 +115,7 @@ function Home(){
       fontWeight: '400',
       letterSpacing: '0.3em',
       marginRight: '-0.3em',
-      color: '#666', // Much darker silver so it recedes into the background
+      color: '#666', 
       marginBottom: '3rem',
       textTransform: 'uppercase',
     },

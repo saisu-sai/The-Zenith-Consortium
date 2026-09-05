@@ -14,7 +14,7 @@ app.use(cors({
 }));
 
 
-const Secret = "promethean";
+const Secret = "EPOCH";
 
 app.post("/api/verify", (req,res)=>{
   const attempt = req.body.code;
